@@ -1,0 +1,3 @@
+main.data_path = "Data/Printed/"
+main.corpus_name = "AMNLT_Printed"
+main.model_name="CNNT_1D"

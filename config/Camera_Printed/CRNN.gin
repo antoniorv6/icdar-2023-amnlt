@@ -1,0 +1,3 @@
+main.data_path = "Data/Synthetic/"
+main.corpus_name = "AMNLT_Synthetic"
+main.model_name="CRNN"

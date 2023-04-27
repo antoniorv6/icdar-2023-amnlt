@@ -1,0 +1,11 @@
+aiohttp
+fire
+gin-config
+lightning
+loguru
+opencv-python
+pip-chill
+scikit-learn
+torchinfo
+torchvision
+wandb
