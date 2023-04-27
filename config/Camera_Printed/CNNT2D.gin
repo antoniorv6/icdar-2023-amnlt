@@ -1,3 +1,3 @@
 main.data_path = "Data/Camera_Printed/"
 main.corpus_name = "AMNLT_Camera_Printed"
-main.model_name="FCN"
+main.model_name="CNNT_2D"
