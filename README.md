@@ -27,7 +27,8 @@ Create a virtual environment using either virtualenv or conda and run the follow
 
 ```sh
 git clone https://github.com/antoniorv6/icdar-2023-amnlt.git
-pip install -r requirements.txt 
+pip install -r requirements.txt
+mkdir Data
 ```
 
 ### Docker
