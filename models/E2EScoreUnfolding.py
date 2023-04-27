@@ -184,6 +184,55 @@ class RecurrentDecoder(nn.Module):
         x = x.permute(1,0,2)
         return F.log_softmax(x, dim=2)
 
+class PositionalEncoding2D(nn.Module):
+
+    def __init__(self, dim, h_max, w_max):
+        super(PositionalEncoding2D, self).__init__()
+        self.h_max = h_max
+        self.max_w = w_max
+        self.dim = dim
+        self.pe = torch.zeros((1, dim, h_max, w_max), requires_grad=False)
+
+        div = torch.exp(-torch.arange(0., dim // 2, 2) / dim * torch.log(torch.tensor(10000.0))).unsqueeze(1)
+        w_pos = torch.arange(0., w_max)
+        h_pos = torch.arange(0., h_max)
+        self.pe[:, :dim // 2:2, :, :] = torch.sin(h_pos * div).unsqueeze(0).unsqueeze(3).repeat(1, 1, 1, w_max)
+        self.pe[:, 1:dim // 2:2, :, :] = torch.cos(h_pos * div).unsqueeze(0).unsqueeze(3).repeat(1, 1, 1, w_max)
+        self.pe[:, dim // 2::2, :, :] = torch.sin(w_pos * div).unsqueeze(0).unsqueeze(2).repeat(1, 1, h_max, 1)
+        self.pe[:, dim // 2 + 1::2, :, :] = torch.cos(w_pos * div).unsqueeze(0).unsqueeze(2).repeat(1, 1, h_max, 1)
+
+    def forward(self, x):
+        """
+        Add 2D positional encoding to x
+        x: (B, C, H, W)
+        """
+        return x + self.pe[:, :, :x.size(2), :x.size(3)]
+
+    def get_pe_by_size(self, h, w):
+        return self.pe[:, :, :h, :w]
+
+class TransformerScoreUnfolding2D(nn.Module):
+
+    def __init__(self, out_cats, max_h, max_w):
+        super(TransformerScoreUnfolding2D, self).__init__()
+        self.dummy_param = nn.Parameter(torch.empty(0))
+        self.pos_encoding = PositionalEncoding2D(dim=512, h_max=max_h, w_max=max_w)
+        transf_layer = nn.TransformerEncoderLayer(d_model=512, nhead=8, dim_feedforward=1024, batch_first=True)
+        self.dec_transf = nn.TransformerEncoder(transf_layer, num_layers=1)
+        self.out_dense = nn.Linear(in_features=512, out_features=out_cats)
+
+    def forward(self, inputs):
+        x = inputs
+        b, c, h, w = x.size()
+        x = self.pos_encoding(x)
+        x = x.reshape(b, c, h*w)
+        x = x.permute(0,2,1)
+        x = self.dec_transf(x)
+        x = self.out_dense(x)
+        x = x.permute(1,0,2)
+        return F.log_softmax(x, dim=2)
+
+
 class E2EScore_FCN(nn.Module):
 
     def __init__(self, in_channels, out_cats):
@@ -209,12 +258,33 @@ class E2EScore_CRNN(nn.Module):
         x = self.decoder(x)
         return x
 
+class E2EScore_CNNT2D(nn.Module):
 
-def get_FCN_model(in_channels, out_size, maxlen=None):
+    def __init__(self, in_channels, out_cats, mh, mw, pretrain_path=None):
+        super(E2EScore_CNNT2D, self).__init__()
+        self.encoder = Encoder(in_channels=in_channels)
+
+        if pretrain_path != None:
+            print(f"Loading weights from {pretrain_path}")
+            self.encoder.load_state_dict(torch.load(pretrain_path), strict=True)
+
+        self.decoder = TransformerScoreUnfolding2D(out_cats=out_cats, max_w=mw, max_h=mh)
+    
+    def forward(self, inputs):
+        x = self.encoder(inputs)
+        x = self.decoder(x)
+        return x
+
+
+def get_FCN_model(in_channels, out_size, mh, mw, maxlen=None):
     model = E2EScore_FCN(in_channels=in_channels, out_cats=out_size)
     return model
 
-def get_CRNN_model(in_channels, out_size, maxlen=None):
+def get_CRNN_model(in_channels, out_size, mh, mw, maxlen=None):
     model = E2EScore_CRNN(in_channels=in_channels, out_cats=out_size)
+    return model
+
+def get_CNNT2D_model(in_channels, out_size, mh, mw, maxlen=None):
+    model = E2EScore_CNNT2D(in_channels=in_channels, out_cats=out_size, mh=mh, mw=mw)
     return model
 

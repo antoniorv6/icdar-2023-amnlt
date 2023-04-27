@@ -143,7 +143,7 @@ class LighntingE2EModelUnfolding(L.LightningModule):
         return ker
 
 def get_model(maxwidth, maxheight, in_channels, out_size, blank_idx, i2w, model_name, output_path, maxlen=None):
-    model = CONST_MODEL_IMPLEMENTATIONS[model_name](in_channels=in_channels, out_size=out_size, maxlen=maxlen)
+    model = CONST_MODEL_IMPLEMENTATIONS[model_name](in_channels=in_channels, out_size=out_size, maxlen=maxlen, mh=maxheight, mw=maxwidth)
     lighningModel = LighntingE2EModelUnfolding(model=model, blank_idx=blank_idx, i2w=i2w, output_path=output_path)
     summary(lighningModel, input_size=([1, in_channels, maxheight, maxwidth]))
     return lighningModel
