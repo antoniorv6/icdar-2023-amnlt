@@ -78,7 +78,6 @@ class LighntingE2EModelUnfolding(L.LightningModule):
 
         self.dec_val_ex.append(dec)
         self.gt_val_ex.append(gt)
-        self.img_val_ex.append((255.*torch.rot90(val_batch[0].squeeze(0), dims=[1,2])))
 
     def on_validation_epoch_end(self):        
         
@@ -88,26 +87,6 @@ class LighntingE2EModelUnfolding(L.LightningModule):
         self.log('val_WER', wer)
         self.log('val_LER', ler)
         self.log('val_KER', ker)
-        
-        columns = ['Image', 'PRED', 'GT']
-        data = []
-
-        nsamples = len(self.dec_val_ex) if len(self.dec_val_ex) < 5 else 5
-        random_indices = random.sample(range(len(self.dec_val_ex)), nsamples)
-
-
-        for idx in random_indices:
-            data.append([wandb.Image(self.img_val_ex[idx]), "".join(self.dec_val_ex[idx]), "".join(self.gt_val_ex[idx])])
-        
-        table = wandb.Table(columns= columns, data=data)
-        
-        self.logger.experiment.log(
-            {'Validation samples': table}
-        )
-
-        self.gt_val_ex = []
-        self.dec_val_ex = []
-        self.ind_val_ker = []
 
         return ker
 
@@ -130,7 +109,7 @@ class LighntingE2EModelUnfolding(L.LightningModule):
 
         self.dec_val_ex.append(dec)
         self.gt_val_ex.append(gt)
-        self.img_val_ex.append((255.*torch.rot90(test_batch[0].squeeze(0), dims=[1,2])))
+        self.img_val_ex.append((255.*test_batch[0].squeeze(0)))
     
     def on_test_epoch_end(self) -> None:
         mer, wer, ler, ker = compute_metrics(self.dec_val_ex, self.gt_val_ex)
@@ -154,7 +133,6 @@ class LighntingE2EModelUnfolding(L.LightningModule):
         self.logger.experiment.log(
             {'Validation samples': table}
         )
-
 
         self.gt_val_ex = []
         self.dec_val_ex = []

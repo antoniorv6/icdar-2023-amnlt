@@ -2,7 +2,7 @@ import fastwer
 from utils import levenshtein
 
 def extract_music_text(array):
-    lines = array
+    lines = array.split("\n")
     lyrics = []
     symbols = []
     for idx, l in enumerate(lines):
@@ -60,8 +60,8 @@ def compute_metrics(predictions_array, gt_array):
 
     for pa, ga in zip(predictions_array, gt_array):
         gt_lines, complete_gt = extract_music_textllevel(ga)
-        
         hyp_lines, complete_hyp = extract_music_textllevel(pa)
+
         _, gt_music, gt_text_string = extract_music_text(ga)
         _, h_music, h_text_string = extract_music_text(pa)
 
@@ -81,7 +81,6 @@ def compute_metrics(predictions_array, gt_array):
         accum_len_lines += len(gt_lines)
         accum_len_krn += len(complete_gt)
 
-        #accum_ter += pyter.ter(h_text_array, gt_text_array)
         h_unaligned_str = h_text_string.replace(".", "")
         g_unaligned_str = gt_text_string.replace(".", "")
 
