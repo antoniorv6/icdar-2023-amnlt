@@ -41,22 +41,46 @@ docker exec -it <docker_container_id> /bin/bash
 
 # Data
 
-The datasets created to run the experiments are publicly available for replication purposes. 
+The datasets created to run the experiments are [publicly available](https://grfia.dlsi.ua.es/musicdocs/ICDAR2023_AMNLT.tgz) for replication purposes. 
 
 **Download and setup**
 
 ```sh
 cd Data
-wget <link_to_datasets>
+wget https://grfia.dlsi.ua.es/musicdocs/ICDAR2023_AMNLT.tgz
 tar -xzvf ICDAR2023_AMLT_Datasets.tgz
 ```
 
-## Including new datasets
+# Train
+These experiments run under the Weights & Biases API. To replicate an experiment, run the following code:
+
+```sh
+wandb login
+python main_train.py --config <path-to-config>
+```
+The config files are located in the ```config/``` folder, depending on the executed config file, a specific experiment will be run.
+
+# Test
+
+***Under development***
+
+# Using other datasets
+
+## Train on a new dataset
+
+If you want to test this code with a new music dataset, by folowing these instructions:
+
+1. Insert the new dataset in the ```Data``` folder. It should be divided in three folders (```train```, ```val``` and ```test```). Each folder should contain all the png files and their corresponding Humdrum Kern (.krn) files.
+
+2. Create a configuration file in the ```config``` folder. We recommend copying the format that is provided in the experimentation examples.
+
+3. Run the training command provided in [the training section](#train) including your config file.
+
+## Test on a new dataset
+To test in a new dataset, just follow the instructions given in the [test section](#test)
 
 
----
-
-**Citation**
+# Citation
 
 Citation information will be provided when proceedings are published.
 

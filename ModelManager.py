@@ -81,9 +81,10 @@ class LighntingE2EModelUnfolding(L.LightningModule):
 
     def on_validation_epoch_end(self):        
         
-        mer, wer, ler, ker = compute_metrics(self.dec_val_ex, self.gt_val_ex)
+        mer, cer, wer, ler, ker = compute_metrics(self.dec_val_ex, self.gt_val_ex)
 
         self.log('val_MER', mer)
+        self.log('val_CER', cer)
         self.log('val_WER', wer)
         self.log('val_LER', ler)
         self.log('val_KER', ker)
@@ -112,12 +113,13 @@ class LighntingE2EModelUnfolding(L.LightningModule):
         self.img_val_ex.append((255.*test_batch[0].squeeze(0)))
     
     def on_test_epoch_end(self) -> None:
-        mer, wer, ler, ker = compute_metrics(self.dec_val_ex, self.gt_val_ex)
+        mer, cer, wer, ler, ker = compute_metrics(self.dec_val_ex, self.gt_val_ex)
 
-        self.log('val_MER', mer)
-        self.log('val_WER', wer)
-        self.log('val_LER', ler)
-        self.log('val_KER', ker)
+        self.log('test_MER', mer)
+        self.log('test_CER', cer)
+        self.log('test_WER', wer)
+        self.log('test_LER', ler)
+        self.log('test_KER', ker)
         
         columns = ['Image', 'PRED', 'GT']
         data = []

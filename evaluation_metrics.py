@@ -47,6 +47,8 @@ def compute_metrics(predictions_array, gt_array):
     accum_edit_disntance_krn = 0
 
     u_accum_wer = 0
+    u_accum_cer = 0
+
 
     accum_len_music_u = 0
 
@@ -84,6 +86,7 @@ def compute_metrics(predictions_array, gt_array):
         h_unaligned_str = h_text_string.replace(".", "")
         g_unaligned_str = gt_text_string.replace(".", "")
 
+        u_accum_cer += fastwer.score([h_unaligned_str], [g_unaligned_str], char_level=True)
         u_accum_wer += fastwer.score([h_unaligned_str], [g_unaligned_str])
 
     ser = 100.*accum_edit_distance_music_u / accum_len_music_u
@@ -91,6 +94,8 @@ def compute_metrics(predictions_array, gt_array):
     ker = 100.*accum_edit_disntance_krn / accum_len_krn
 
     wer = u_accum_wer / total_samples
+    cer = u_accum_cer / total_samples
 
-    return ser, wer, ler, ker    
+
+    return ser, cer, wer, ler, ker    
     
