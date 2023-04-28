@@ -1,5 +1,8 @@
 # A Holistic Approach for Aligned Music Notation and Lyrics Transcription
 
+![PyTorch](https://img.shields.io/badge/PyTorch-%23EE4C2C.svg?style=flat&logo=PyTorch&logoColor=white) ![Lightning](https://img.shields.io/badge/-Lightning-792ee5?logo=pytorchlightning&logoColor=white)
+[![License](https://img.shields.io/static/v1?label=License&message=MIT&color=blue)]() [![Version](https://img.shields.io/static/v1?label=Version&message=1.0&color=)]() [![Python](https://img.shields.io/static/v1?label=Python&message=3.9&color=blue)]()
+
 This repository contains the public implementation of the paper:
 
 >**Juan C. Martinez-Sevilla**, Antonio Ríos-Vila, Francisco J. Castellanos, Jorge Calvo-Zaragoza<br />
