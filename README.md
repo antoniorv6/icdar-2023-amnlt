@@ -51,6 +51,14 @@ cd Data
 wget https://grfia.dlsi.ua.es/musicdocs/ICDAR2023_AMNLT.tgz
 tar -xzvf ICDAR2023_AMLT_Datasets.tgz
 ```
+**Using the Music Generator**
+
+You can download the implemented to create the datasets of this paper either by downloading it through its [repository link](https://github.com/JuanCarlosMartinezSevilla/ICDAR-23-AMNLT-Music-Generator.git) or by cloning it as a submodule in this repository:
+
+```sh
+git submodule update --remote
+```
+To generate a new dataset, we refer to the [tool docummentation](https://github.com/JuanCarlosMartinezSevilla/ICDAR-23-AMNLT-Music-Generator/blob/main/README.md).
 
 # Train
 These experiments run under the Weights & Biases API. To replicate an experiment, run the following code:
