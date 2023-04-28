@@ -41,7 +41,7 @@ def main(data_path=None, corpus_name=None, model_name=None):
                       blank_idx=train_dataset.vocab_size(), i2w=train_dataset.get_i2w(), 
                       model_name=model_name, output_path=outpath)
     
-    early_stopping = EarlyStopping(monitor='val_KER', min_delta=0.01, patience=5, mode="min", verbose=True)
+    early_stopping = EarlyStopping(monitor='val_KER', min_delta=0.1, patience=5, mode="min", verbose=True)
     checkpointer = ModelCheckpoint(dirpath=f"weights/{corpus_name}", filename=f"{model_name}", 
                                    monitor="val_KER", mode='min',
                                    save_top_k=1, verbose=True)
@@ -49,7 +49,7 @@ def main(data_path=None, corpus_name=None, model_name=None):
     trainer = lit.Trainer(max_epochs=1000, callbacks=[early_stopping, checkpointer], logger=wandb_logger)
 #
     trainer.fit(model, train_dataloader, val_dataloader)
-    model = model.load_from_checkpoint(checkpointer.best_model_path)
+    model = LighntingE2EModelUnfolding.load_from_checkpoint(checkpointer.best_model_path)
     trainer.test(model, test_dataloader)
     wandb.finish()
 

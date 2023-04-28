@@ -9,11 +9,13 @@ from torchinfo import summary
 from itertools import groupby
 from evaluation_metrics import compute_metrics
 
-from models.E2EScoreUnfolding import get_FCN_model, get_CRNN_model
+from models.E2EScoreUnfolding import get_FCN_model, get_CRNN_model, get_CNNT2D_model, get_CNNT1D_model
 
 CONST_MODEL_IMPLEMENTATIONS = {
     "FCN": get_FCN_model,
-    "CRNN": get_CRNN_model
+    "CRNN": get_CRNN_model,
+    "CNNT_2D": get_CNNT2D_model,
+    "CNNT_1D": get_CNNT1D_model
 }
 
 class LighntingE2EModelUnfolding(L.LightningModule):
@@ -33,7 +35,7 @@ class LighntingE2EModelUnfolding(L.LightningModule):
 
         self.out_path = output_path
 
-        self.save_hyperparameters(ignore=['model'])
+        self.save_hyperparameters()
 
     def forward(self, input):
         return self.model(input)
@@ -142,8 +144,8 @@ class LighntingE2EModelUnfolding(L.LightningModule):
 
         return ker
 
-def get_model(maxwidth, maxheight, in_channels, out_size, blank_idx, i2w, model_name, output_path, maxlen=None):
-    model = CONST_MODEL_IMPLEMENTATIONS[model_name](in_channels=in_channels, out_size=out_size, maxlen=maxlen, mh=maxheight, mw=maxwidth)
+def get_model(maxwidth, maxheight, in_channels, out_size, blank_idx, i2w, model_name, output_path):
+    model = CONST_MODEL_IMPLEMENTATIONS[model_name](in_channels=in_channels, out_size=out_size, mh=maxheight, mw=maxwidth)
     lighningModel = LighntingE2EModelUnfolding(model=model, blank_idx=blank_idx, i2w=i2w, output_path=output_path)
     summary(lighningModel, input_size=([1, in_channels, maxheight, maxwidth]))
     return lighningModel
