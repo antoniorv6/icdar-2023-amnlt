@@ -59,7 +59,7 @@ class AMNLTDataset(Dataset):
         self.x, self.y = load_set(f"{data_path}{set_name}")
         self.x = self.preprocess_images(self.x)
         self.y = self.preprocess_gt(self.y)
-        
+
         self.tensorTransform = transforms.ToTensor()
 
         self.w2i, self.i2w = None, None

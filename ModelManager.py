@@ -35,13 +35,13 @@ class LighntingE2EModelUnfolding(L.LightningModule):
 
         self.out_path = output_path
 
-        self.save_hyperparameters()
+        self.save_hyperparameters(ignore=['model'])
 
     def forward(self, input):
         return self.model(input)
     
     def configure_optimizers(self):
-        return optim.Adam(self.parameters(), lr=1e-4)
+        return optim.Adam(self.model.parameters(), lr=1e-4)
 
     def training_step(self, train_batch, batch_idx):
          X_tr, Y_tr, L_tr, T_tr = train_batch
@@ -148,4 +148,4 @@ def get_model(maxwidth, maxheight, in_channels, out_size, blank_idx, i2w, model_
     model = CONST_MODEL_IMPLEMENTATIONS[model_name](in_channels=in_channels, out_size=out_size, mh=maxheight, mw=maxwidth)
     lighningModel = LighntingE2EModelUnfolding(model=model, blank_idx=blank_idx, i2w=i2w, output_path=output_path)
     summary(lighningModel, input_size=([1, in_channels, maxheight, maxwidth]))
-    return lighningModel
+    return lighningModel, model

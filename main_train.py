@@ -36,12 +36,12 @@ def main(data_path=None, corpus_name=None, model_name=None):
 
     wandb_logger = WandbLogger(project=f'AMNLT_ICDAR2023', name=model_name, group=corpus_name)
 #
-    model = get_model(maxwidth=m_width, maxheight=m_height, 
+    model, torchmodel = get_model(maxwidth=m_width, maxheight=m_height, 
                       in_channels=1, out_size=train_dataset.vocab_size()+1, 
                       blank_idx=train_dataset.vocab_size(), i2w=train_dataset.get_i2w(), 
                       model_name=model_name, output_path=outpath)
     
-    early_stopping = EarlyStopping(monitor='val_KER', min_delta=0.1, patience=5, mode="min", verbose=True)
+    early_stopping = EarlyStopping(monitor='val_KER', min_delta=0.01, patience=5, mode="min", verbose=True)
     checkpointer = ModelCheckpoint(dirpath=f"weights/{corpus_name}", filename=f"{model_name}", 
                                    monitor="val_KER", mode='min',
                                    save_top_k=1, verbose=True)
@@ -49,7 +49,7 @@ def main(data_path=None, corpus_name=None, model_name=None):
     trainer = lit.Trainer(max_epochs=1000, callbacks=[early_stopping, checkpointer], logger=wandb_logger)
 #
     trainer.fit(model, train_dataloader, val_dataloader)
-    model = LighntingE2EModelUnfolding.load_from_checkpoint(checkpointer.best_model_path)
+    model = LighntingE2EModelUnfolding.load_from_checkpoint(checkpointer.best_model_path, model=torchmodel)
     trainer.test(model, test_dataloader)
     wandb.finish()
 
