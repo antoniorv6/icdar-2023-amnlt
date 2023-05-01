@@ -72,9 +72,23 @@ python main_train.py --config <path-to-config>
 ```
 The config files are located in the ```config/``` folder, depending on the executed config file, a specific experiment will be run.
 
-# Test
+# Transcribe a dataset
+If you want to use the model to transcribe an unlabeled corpus, you can by running the ``predict_on_dataset.py`` script. To do so, run the following command:
 
-***Under development***
+```sh
+ python predict_on_dataset.py --images_path <path_to_images> --model <model_name> --checkpoint_path <checkpoint_path> --corpus_name <name_of_the_corpus> --output_path <ouptut_folder_path>
+```
+The argument parameters are the following:
+
+* ``images_path``: Folder to the images to be transcribed. The tool only supports JPG and PNG images.
+* ``model``: Model architecture to load. The following can be inserted:
+  * FCN
+  * CRNN
+  * CNNT_1D
+  * CNNT_2D
+* ``checkpoint_path``: Folder where the .ckpt file is stored with the weights of the model.
+* ``corpus_name``: Name of the corpus, it is essential to be the same name as the dictionaries file in the project.
+* ``output_path``: Folder where predictions will be stored.
 
 # Using other datasets
 
@@ -87,9 +101,6 @@ If you want to test this code with a new music dataset, by folowing these instru
 2. Create a configuration file in the ```config``` folder. We recommend copying the format that is provided in the experimentation examples.
 
 3. Run the training command provided in [the training section](#train) including your config file.
-
-## Test on a new dataset
-To test in a new dataset, just follow the instructions given in the [test section](#test)
 
 
 # Citation
