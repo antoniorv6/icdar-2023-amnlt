@@ -107,4 +107,24 @@ If you want to test this code with a new music dataset, by folowing these instru
 
 Citation information will be provided when proceedings are published.
 
+```bibtex
+@InProceedings{MartinezSevilla2023,
+author="Martinez-Sevilla, Juan C.
+and Rios-Vila, Antonio
+and Castellanos, Francisco J.
+and Calvo-Zaragoza, Jorge",
+editor="Fink, Gernot A.
+and Jain, Rajiv
+and Kise, Koichi
+and Zanibbi, Richard",
+title="A Holistic Approach for Aligned Music and Lyrics Transcription",
+booktitle="Document Analysis and Recognition - ICDAR 2023",
+year="2023",
+publisher="Springer Nature Switzerland",
+address="Cham",
+pages="185--201",
+isbn="978-3-031-41676-7"
+}
+```
+
 ----
